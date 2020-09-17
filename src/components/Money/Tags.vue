@@ -1,6 +1,5 @@
 <template>
   <div class="tags">
-
     <div class="new">
       <button @click="create">新增标签</button>
     </div>
@@ -9,7 +8,6 @@
           :class="{selected: selectedTags.indexOf(tag)>=0} "
       @click="select(tag)">{{tag.name}}
       </li>
-
     </ul>
   </div>
 </template>
