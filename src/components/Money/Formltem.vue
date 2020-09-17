@@ -14,7 +14,7 @@ import Vue from 'vue'
 import {Component, Watch, Prop} from "vue-property-decorator";
 @Component
 export default class Formltem extends Vue{
-    value ='';
+    @Prop({default:''}) value!: string;
 
     @Prop({required: true}) fieldName!: string;
     @Prop()placeholder?: string;
@@ -35,8 +35,6 @@ export default class Formltem extends Vue{
 
   .name{
     padding-right: 16px;
-
-
   }
   input{
     height: 40px;
