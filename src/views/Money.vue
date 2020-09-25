@@ -1,6 +1,5 @@
 <template>
   <Layout class-prefix="layout">
-    {{record}}
     <NumberPad :value.sync="record.amount"  @submit="saveRecord"/>
     <Types :value.sync="record.type" />
   <div class="notes">
@@ -9,7 +8,9 @@
               @update:value="onUpdateNotes"
     />
   </div>
-    <Tags :data-source.sync="tags"  @update:value='onUpdateTags'/>
+    <Tags/>
+    {{count}}
+    <button @click="add">+1</button>
    </Layout>
 </template>
 <script lang="ts">
@@ -18,45 +19,42 @@ import NumberPad from "@/components/Money/NumberPad.vue";
 import Types from "@/components/Money/Types.vue";
 import FormItem from "@/components/Money/Formltem.vue";
 import Tags from "@/components/Money/Tags.vue";
-import {Component, Watch} from "vue-property-decorator";
-import recordListModel from "@/models/recordListModel";
-import tagListModel from "@/models/tagListModel.ta";
+import {Component, } from "vue-property-decorator";
+import store from "@/store/index2";
 window.localStorage.setItem('version','0.0.1')
-
-
-const recordList: RecordItem[]=recordListModel.fetch();
-const tagList = tagListModel.fetch()
 
 
 
 @Component({
-  components: {Tags, FormItem, Types, NumberPad}
+  components: {Tags, FormItem, Types, NumberPad},
+  computed: {
+    count(){
+      return store.count;
+    },
+    recordList(){
+     return  store.recordList;
+    }
+  }
+
 }
 )
 export default class Money extends Vue{
-  tags=tagList;
-  recordList: RecordItem[] = JSON.parse(window.localStorage.getItem('recordList')||'[]');
+  add(){
+    store.addCount()
+  }
+
   record: RecordItem ={
     tags:[], notes:'', type:'-', amount: 0
   };
 
-  onUpdateTags(value: string[]){
-    this.record.tags=value;
-  }
   onUpdateNotes(value: string){
     this.record.notes=value;
   }
 
   saveRecord(){
-    const record2: RecordItem = recordListModel.clone(this.record);
-    record2.createdAt = new Date();
-    this.recordList.push(record2);
-    console.log(this.recordList);
+   store.createRecord(this.record)
   }
-  @Watch('recordList')
-  onRecordListChange(){
-    recordListModel.save(this.recordList);
-  }
+
 }
 </script>
 
